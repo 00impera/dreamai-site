@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>DREAMAI — AI tools for making things</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#12111d;
+    --bg-raise:#1b1a2b;
+    --ink:#eae7f2;
+    --ink-dim:#a7a3bd;
+    --line:#33324a;
+    --accent:#9b8cf2;
+    --accent-dim:#6f63a8;
+  }
+  :root:not([data-theme="light"]) { color-scheme: dark; }
+  @media (prefers-color-scheme: light) {
+    :root:not([data-theme="dark"]){
+      --bg:#f7f6f2;
+      --bg-raise:#ffffff;
+      --ink:#1c1b26;
+      --ink-dim:#5c5a70;
+      --line:#e1dfe8;
+      --accent:#5b4bc4;
+      --accent-dim:#8479c9;
+    }
+  }
+  :root[data-theme="light"]{
+    --bg:#f7f6f2;
+    --bg-raise:#ffffff;
+    --ink:#1c1b26;
+    --ink-dim:#5c5a70;
+    --line:#e1dfe8;
+    --accent:#5b4bc4;
+    --accent-dim:#8479c9;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth; scroll-padding-top:env(safe-area-inset-top,0px);}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'Inter',system-ui,-apple-system,sans-serif;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    line-height:1.55;
+  }
+  a{color:inherit;}
+  img{max-width:100%;}
+
+  .wrap{max-width:1080px; margin:0 auto; padding:0 28px;}
+
+  header.site{
+    position:sticky; top:0;
+    top:env(safe-area-inset-top,0px);
+    background:color-mix(in srgb, var(--bg) 88%, transparent);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+    z-index:10;
+  }
+  .nav{
+    display:flex; align-items:center; justify-content:space-between;
+    padding:18px 0;
+  }
+  .brand{
+    font-family:'Newsreader', serif;
+    font-size:1.35rem;
+    letter-spacing:0.01em;
+  }
+  .brand em{font-style:italic; color:var(--accent);}
+  .nav-links{display:flex; gap:28px; font-size:0.94rem; color:var(--ink-dim);}
+  .nav-links a:hover{color:var(--ink);}
+  .nav-cta{
+    font-size:0.9rem;
+    padding:9px 18px;
+    border-radius:100px;
+    background:var(--accent);
+    color:#0f0e18;
+    font-weight:600;
+    text-decoration:none;
+    white-space:nowrap;
+  }
+
+  main{overflow-x:hidden;}
+
+  .hero{
+    padding:96px 0 80px;
+    border-bottom:1px solid var(--line);
+  }
+  .hero-grid{
+    display:grid;
+    grid-template-columns:1.2fr 0.8fr;
+    gap:56px;
+    align-items:end;
+  }
+  .eyebrow{
+    color:var(--accent);
+    font-size:0.95rem;
+    margin:0 0 18px;
+  }
+  h1{
+    font-family:'Newsreader', serif;
+    font-weight:500;
+    font-size:clamp(2.4rem, 5.2vw, 3.9rem);
+    line-height:1.05;
+    margin:0 0 24px;
+    max-width:15ch;
+  }
+  .hero-sub{
+    color:var(--ink-dim);
+    font-size:1.15rem;
+    max-width:46ch;
+    margin:0 0 32px;
+  }
+  .hero-actions{display:flex; gap:16px; flex-wrap:wrap;}
+  .btn-primary{
+    background:var(--accent);
+    color:#0f0e18;
+    padding:13px 26px;
+    border-radius:100px;
+    text-decoration:none;
+    font-weight:600;
+    font-size:0.98rem;
+  }
+  .btn-ghost{
+    border:1px solid var(--line);
+    color:var(--ink);
+    padding:13px 26px;
+    border-radius:100px;
+    text-decoration:none;
+    font-size:0.98rem;
+  }
+  .hero-panel{
+    border:1px solid var(--line);
+    border-radius:18px;
+    padding:26px;
+    background:var(--bg-raise);
+  }
+  .hero-panel .label{font-size:0.82rem; color:var(--ink-dim); margin-bottom:10px;}
+  .prompt-line{
+    font-family:'Inter',sans-serif;
+    font-size:0.95rem;
+    border:1px solid var(--line);
+    border-radius:10px;
+    padding:12px 14px;
+    margin-bottom:10px;
+    color:var(--ink-dim);
+  }
+  .prompt-line.result{color:var(--ink); border-color:var(--accent-dim);}
+
+  section{padding:76px 0; border-bottom:1px solid var(--line);}
+  h2{
+    font-family:'Newsreader', serif;
+    font-weight:500;
+    font-size:clamp(1.7rem, 3vw, 2.3rem);
+    margin:0 0 12px;
+    max-width:20ch;
+  }
+  .section-sub{color:var(--ink-dim); max-width:56ch; margin:0 0 44px; font-size:1.02rem;}
+
+  .feature-list{
+    display:grid;
+    grid-template-columns:repeat(3, 1fr);
+    gap:0;
+    border-top:1px solid var(--line);
+  }
+  .feature{
+    padding:28px 24px;
+    border-right:1px solid var(--line);
+    border-bottom:1px solid var(--line);
+  }
+  .feature:nth-child(3n){border-right:none;}
+  .feature h3{
+    font-size:1.05rem;
+    font-weight:600;
+    margin:0 0 10px;
+  }
+  .feature p{color:var(--ink-dim); font-size:0.95rem; margin:0;}
+
+  .how-list{list-style:none; margin:0; padding:0; counter-reset:step;}
+  .how-item{
+    counter-increment:step;
+    display:grid;
+    grid-template-columns:56px 1fr;
+    gap:20px;
+    padding:22px 0;
+    border-bottom:1px solid var(--line);
+  }
+  .how-item:last-child{border-bottom:none;}
+  .how-item::before{
+    content:counter(step);
+    font-family:'Newsreader',serif;
+    font-size:1.6rem;
+    color:var(--accent);
+  }
+  .how-item h3{margin:0 0 6px; font-size:1.05rem;}
+  .how-item p{margin:0; color:var(--ink-dim); font-size:0.95rem; max-width:56ch;}
+
+  .plans{
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:20px;
+  }
+  .plan{
+    border:1px solid var(--line);
+    border-radius:16px;
+    padding:28px 24px;
+    background:var(--bg-raise);
+  }
+  .plan.highlight{border-color:var(--accent);}
+  .plan-name{font-size:0.95rem; color:var(--ink-dim); margin-bottom:14px;}
+  .plan-price{
+    font-family:'Newsreader',serif;
+    font-size:2.1rem;
+    margin-bottom:4px;
+  }
+  .plan-price span{font-size:0.95rem; color:var(--ink-dim); font-family:'Inter',sans-serif;}
+  .plan-desc{color:var(--ink-dim); font-size:0.92rem; margin-bottom:20px;}
+  .plan ul{list-style:none; padding:0; margin:0 0 24px; font-size:0.92rem; color:var(--ink-dim);}
+  .plan li{padding:7px 0; border-top:1px solid var(--line);}
+  .plan li:first-child{border-top:none;}
+  .plan-btn{
+    display:block;
+    text-align:center;
+    padding:11px;
+    border-radius:100px;
+    border:1px solid var(--line);
+    text-decoration:none;
+    color:var(--ink);
+    font-size:0.92rem;
+    font-weight:500;
+  }
+  .plan.highlight .plan-btn{background:var(--accent); color:#0f0e18; border-color:var(--accent); font-weight:600;}
+
+  .contact-row{
+    display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:24px;
+  }
+  .contact-details{color:var(--ink-dim); font-size:0.95rem;}
+  .contact-details a{color:var(--ink); text-decoration:underline; text-underline-offset:3px;}
+
+  footer{
+    padding:36px 0;
+  }
+  .foot-row{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px;
+    color:var(--ink-dim); font-size:0.85rem;
+  }
+
+  @media (max-width:760px){
+    .hero-grid{grid-template-columns:1fr;}
+    .feature-list{grid-template-columns:1fr;}
+    .feature{border-right:none;}
+    .plans{grid-template-columns:1fr;}
+    .nav-links{display:none;}
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap nav">
+    <div class="brand">DREAM<em>ai</em></div>
+    <nav class="nav-links">
+      <a href="#product">Product</a>
+      <a href="#how">How it works</a>
+      <a href="#pricing">Pricing</a>
+      <a href="#contact">Contact</a>
+    </nav>
+    <a class="nav-cta" href="#pricing">Get started</a>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="wrap hero-grid">
+      <div>
+        <p class="eyebrow">AI tools for making things</p>
+        <h1>Turn a rough idea into finished content in minutes.</h1>
+        <p class="hero-sub">DREAMAI is a digital platform for writers, marketers and small teams who need to draft, edit and publish content without hiring a studio. Describe what you need in plain language — get a finished draft back.</p>
+        <div class="hero-actions">
+          <a class="btn-primary" href="#pricing">Start creating</a>
+          <a class="btn-ghost" href="#product">See how it works</a>
+        </div>
+      </div>
+      <div class="hero-panel">
+        <p class="label">Try a prompt</p>
+        <div class="prompt-line">"Write a launch email for a productivity app, friendly tone, under 150 words."</div>
+        <div class="prompt-line result">Draft ready — subject line, body copy and a CTA, editable inline.</div>
+      </div>
+    </div>
+  </section>
+
+  <section id="product">
+    <div class="wrap">
+      <h2>One workspace for writing, editing and publishing</h2>
+      <p class="section-sub">No installs, no design software. Everything runs in the browser, and every draft is yours to export or publish directly.</p>
+    </div>
+    <div class="wrap">
+      <div class="feature-list">
+        <div class="feature">
+          <h3>Drafting</h3>
+          <p>Generate first drafts of articles, emails, product copy and social posts from a short brief.</p>
+        </div>
+        <div class="feature">
+          <h3>Editing</h3>
+          <p>Tighten tone, fix structure, or rewrite a paragraph in a different voice without starting over.</p>
+        </div>
+        <div class="feature">
+          <h3>Templates</h3>
+          <p>Reusable formats for newsletters, landing pages and briefs, tuned to your own past content.</p>
+        </div>
+        <div class="feature">
+          <h3>Team workspace</h3>
+          <p>Share drafts, leave comments, and track versions with people you invite to your workspace.</p>
+        </div>
+        <div class="feature">
+          <h3>Export</h3>
+          <p>Send finished content straight to Markdown, Word or your CMS — no copy-paste formatting loss.</p>
+        </div>
+        <div class="feature">
+          <h3>Usage dashboard</h3>
+          <p>See what's been generated, by whom, and how much of your monthly plan is left.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="how">
+    <div class="wrap">
+      <h2>How it works</h2>
+      <p class="section-sub">Three steps, no onboarding call required.</p>
+      <ul class="how-list">
+        <li class="how-item">
+          <div>
+            <h3>Describe what you need</h3>
+            <p>Write a short brief — audience, tone, length. The more specific, the closer the first draft.</p>
+          </div>
+        </li>
+        <li class="how-item">
+          <div>
+            <h3>Review and refine</h3>
+            <p>Edit inline or ask for a rewrite of any section. Nothing publishes until you approve it.</p>
+          </div>
+        </li>
+        <li class="how-item">
+          <div>
+            <h3>Export or publish</h3>
+            <p>Download the file or push it directly to your site. Your account keeps the full history.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="wrap">
+      <h2>Simple, monthly pricing</h2>
+      <p class="section-sub">Charged monthly in advance. Cancel anytime from your account settings — no contracts.</p>
+      <div class="plans">
+        <div class="plan">
+          <p class="plan-name">Starter</p>
+          <p class="plan-price">€9<span> / month</span></p>
+          <p class="plan-desc">For individuals trying it out.</p>
+          <ul>
+            <li>50 generations / month</li>
+            <li>Core templates</li>
+            <li>Export to Markdown &amp; Word</li>
+          </ul>
+          <a class="plan-btn" href="#contact">Choose Starter</a>
+        </div>
+        <div class="plan highlight">
+          <p class="plan-name">Creator</p>
+          <p class="plan-price">€29<span> / month</span></p>
+          <p class="plan-desc">For regular content production.</p>
+          <ul>
+            <li>Unlimited generations</li>
+            <li>Full template library</li>
+            <li>2 workspace seats</li>
+          </ul>
+          <a class="plan-btn" href="#contact">Choose Creator</a>
+        </div>
+        <div class="plan">
+          <p class="plan-name">Team</p>
+          <p class="plan-price">€79<span> / month</span></p>
+          <p class="plan-desc">For small marketing or content teams.</p>
+          <ul>
+            <li>Everything in Creator</li>
+            <li>10 workspace seats</li>
+            <li>Shared brand voice settings</li>
+          </ul>
+          <a class="plan-btn" href="#contact">Choose Team</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact" style="border-bottom:none;">
+    <div class="wrap contact-row">
+      <div>
+        <h2>Questions before you subscribe?</h2>
+        <p class="section-sub" style="margin-bottom:0;">We reply within one business day.</p>
+      </div>
+      <div class="contact-details">
+        <div><a href="mailto:hello@dreamai.app">hello@dreamai.app</a></div>
+        <div>Paris, France</div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap foot-row">
+    <span>© 2026 DREAMAI — Bodnar Ionel, entrepreneur individuel</span>
+    <span>Digital services only. No physical goods.</span>
+  </div>
+</footer>
+
+</body>
+</html>
